@@ -26,7 +26,7 @@ def generate_aesdd_greek_annotations(DATASET_BASE_PATH, ANNOTATIONS_SAVE_PATH, E
             paths_and_labels.append([file, emotion])
     
     df = pd.DataFrame(paths_and_labels, columns=["file_path", "folder_or_label"])
-    df.to_csv(ANNOTATIONS_SAVE_PATH)
+    df.to_csv(ANNOTATIONS_SAVE_PATH, index=False)
 
 
 def main():
@@ -40,6 +40,7 @@ def main():
         ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.AESDD_DIR, output_path),
         EMOTIONS=EMOTS.AESDD_EMOTIONS
     )
+
 
 if __name__ == '__main__':
     main()
