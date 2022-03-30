@@ -1,0 +1,1 @@
+AESDD_EMOTIONS = ["fear", "sadness", "happiness", "anger", "disgust"]
