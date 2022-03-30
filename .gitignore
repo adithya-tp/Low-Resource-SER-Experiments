@@ -1,0 +1,8 @@
+# Hidden file to help 'Finder' on Mac systems
+.DS_Store
+# data folder
+data/
+
+
+# pycache
+__pycache__/
