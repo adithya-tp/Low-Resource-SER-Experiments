@@ -9,14 +9,14 @@ import constants.PATHS as PATHS
 import constants.EMOTIONS as EMOTS
 
 
-def generate_aessd_greek_annotations(DATASET_BASE_PATH, ANNOTATIONS_SAVE_PATH, EMOTIONS):
+def generate_aesdd_greek_annotations(DATASET_BASE_PATH, ANNOTATIONS_SAVE_PATH, EMOTIONS):
     """
-    Function to generate annotations for the low resource AESSD 
+    Function to generate annotations for the low resource AESDD 
     audio dataset for the Greek Language. Specifically we keep track
     of the wav_file_path and parent_folder (which also plays the role of 
     the label, that is, emotion)
 
-    :param DATASET_BASE_PATH: Base path to the AESSD dataset directory
+    :param DATASET_BASE_PATH: Base path to the AESDD dataset directory
     :param ANNOTATIONS_SAVE_PATH: Output path to save generated annotations
     :param EMOTIONS: The different emotions that are also the names of subfolders in dataset
     """
@@ -33,12 +33,12 @@ def main():
     output_path = 'annotations/annotations.csv'
     
     # Create annotations folder in dataset if does not exist
-    os.makedirs(os.path.join(PATHS.AESSD_DIR, os.path.dirname(output_path)), exist_ok=True)
+    os.makedirs(os.path.join(PATHS.AESDD_DIR, os.path.dirname(output_path)), exist_ok=True)
     
-    generate_aessd_greek_annotations(
-        DATASET_BASE_PATH=PATHS.AESSD_DIR,
-        ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.AESSD_DIR, output_path),
-        EMOTIONS=EMOTS.AESSD_EMOTIONS
+    generate_aesdd_greek_annotations(
+        DATASET_BASE_PATH=PATHS.AESDD_DIR,
+        ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.AESDD_DIR, output_path),
+        EMOTIONS=EMOTS.AESDD_EMOTIONS
     )
 
 if __name__ == '__main__':
