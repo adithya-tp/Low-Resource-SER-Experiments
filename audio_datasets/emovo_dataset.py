@@ -7,35 +7,40 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 
-class AESDD_Greek(Dataset):
+class EMOVO_Italian(Dataset):
     """
-    Pytorch Dataset for the Acted Emotional Speech 
-    Dynamic Database (AESDD) speech emotion dataset
+    Pytorch Dataset for EMOVO speech emotion dataset
     """
     def __init__(self, BASE_DIR, ANNOTATIONS_PATH):
         self.base_dir = BASE_DIR
         self.annotations = pd.read_csv(ANNOTATIONS_PATH)
 
-    def _get_audio_sample_path(self, index, folder):
-        file_name = self.annotations.loc[index]['file_path']
+    def _get_audio_sample_path(self, index):
+        folder = self.annotations.iloc[index]['folder']
+        file_name = self.annotations.iloc[index]['file_path']
         return os.path.join(self.base_dir, folder, file_name)
+
+    def _get_label(self, index):
+        label = self.annotations.iloc[index]['emotion']
+        return label
     
     def __len__(self):
         return len(self.annotations)
 
     def __getitem__(self, index):
-        label = self.annotations.loc[index]['folder_or_label']
-        audio_sample_path = self._get_audio_sample_path(index, folder=label)
+        audio_sample_path = self._get_audio_sample_path(index)
         audio, _ = torchaudio.load(audio_sample_path)
+
+        label = self._get_label(index)
         return audio, label
 
 # def test():
 #     import constants.PATHS as PATHS
-#     dataset = AESDD_Greek(
-#         BASE_DIR=PATHS.AESDD_DIR,
-#         ANNOTATIONS_PATH=os.path.join(PATHS.AESDD_DIR, 'annotations/annotations.csv')
+#     dataset = EMOVO_Italian(
+#         BASE_DIR=PATHS.EMOVO_DIR,
+#         ANNOTATIONS_PATH=os.path.join(PATHS.EMOVO_DIR, 'annotations/annotations.csv')
 #     )
-#     print(len(dataset)) # Should be 605
+#     print(len(dataset)) # Should be 588
 #     print(dataset[0]) # Print first data point
 #     print(dataset[0][0].shape, dataset[1][0].shape) # audio has different lengths
     
