@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 import pandas as pd
 import os
 import torchaudio
+from torch.nn.utils.rnn import pad_sequence
 
 import sys
 sys.path.append(".")
@@ -39,26 +40,29 @@ class AESDD_Greek(Dataset):
         audio = self._fetch_audio(index, folder=label)
         return audio, label_idx
     
-    # def collate_fn(batch):
-    #     batch_x = [x for x,y in batch]
-    #     batch_y = [y for x,y in batch]
+    def collate_fn(batch):
+        # Uncomment this if you feel like this is required in your pipeline
+        # batch_x = [x.numpy() for (x, _) in batch]
+        # batch_y = [y for (_, y) in batch]
+        # return batch_x, batch_y
 
-    #     batch_x_pad = pad_sequence(batch_x, batch_first=True) # TODO: pad the sequence with pad_sequence (already imported)
-    #     lengths_x = [len(x) for x in batch_x] # TODO: Get original lengths of the sequence before padding
+        batch_x = [x.squeeze() for (x, _) in batch]
+        batch_x_pad = pad_sequence(batch_x, batch_first=True)
+        lengths_x = [len(x) for x in batch_x]
 
-    #     batch_y_pad = pad_sequence(batch_y, batch_first=True) # TODO: pad the sequence with pad_sequence (already imported)
-    #     lengths_y = [len(y) for y in batch_y] # TODO: Get original lengths of the sequence before padding
-    #     return batch_x_pad, batch_y_pad, torch.tensor(lengths_x), torch.tensor(lengths_y)
+        batch_y = [y for (_, y) in batch]
 
-def test():
-    import constants.PATHS as PATHS
-    dataset = AESDD_Greek(
-        BASE_DIR=PATHS.AESDD_DIR,
-        ANNOTATIONS_PATH=os.path.join(PATHS.AESDD_DIR, 'annotations/annotations.csv')
-    )
-    print(len(dataset)) # Should be 605
-    print(dataset[0]) # Print first data point
-    print(dataset[0][0].shape, dataset[1][0].shape) # audio has different lengths
+        return batch_x_pad, torch.tensor(lengths_x), batch_y
+
+# def test():
+#     import constants.PATHS as PATHS
+#     dataset = AESDD_Greek(
+#         BASE_DIR=PATHS.AESDD_DIR,
+#         ANNOTATIONS_PATH=os.path.join(PATHS.AESDD_DIR, 'annotations/annotations.csv')
+#     )
+#     print(len(dataset)) # Should be 605
+#     print(dataset[0]) # Print first data point
+#     print(dataset[0][0].shape, dataset[1][0].shape) # audio has different lengths
     
-if __name__ == '__main__':
-    test()
+# if __name__ == '__main__':
+#     test()
