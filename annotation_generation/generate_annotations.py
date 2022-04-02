@@ -55,21 +55,24 @@ def generate_emovo_italian_annotations(DATASET_BASE_PATH, ANNOTATIONS_SAVE_PATH,
 
 
 def main():
-    output_path = 'annotations/annotations.csv'
+    output_path_aesdd = 'annotations/annotations_aesdd.csv'
+    output_path_emovo = 'annotations/annotations_emovo.csv'
+    aesdd_annotations_save_path = os.path.join(PATHS.ROOT_DIR, os.path.dirname(output_path_aesdd))
+    emovo_annotations_save_path = os.path.join(PATHS.ROOT_DIR, os.path.dirname(output_path_emovo))
     
     # Create annotations folder in dataset if does not exist
-    os.makedirs(os.path.join(PATHS.AESDD_DIR, os.path.dirname(output_path)), exist_ok=True)
-    os.makedirs(os.path.join(PATHS.EMOVO_DIR, os.path.dirname(output_path)), exist_ok=True)
+    os.makedirs(aesdd_annotations_save_path, exist_ok=True)
+    os.makedirs(emovo_annotations_save_path, exist_ok=True)
     
     generate_aesdd_greek_annotations(
         DATASET_BASE_PATH=PATHS.AESDD_DIR,
-        ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.AESDD_DIR, output_path),
+        ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.ROOT_DIR, output_path_aesdd),
         EMOTIONS=EMOTS.AESDD_EMOTIONS
     )
 
     generate_emovo_italian_annotations(
         DATASET_BASE_PATH=PATHS.EMOVO_DIR,
-        ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.EMOVO_DIR, output_path),
+        ANNOTATIONS_SAVE_PATH=os.path.join(PATHS.ROOT_DIR, output_path_emovo),
         EMOTIONS=EMOTS.EMOVO_EMOTIONS
     )
 
