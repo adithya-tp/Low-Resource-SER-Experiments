@@ -1,10 +1,8 @@
-from torch.utils.data import DataLoader
 from transformers import AutoConfig, Wav2Vec2FeatureExtractor
-import os
 
 import constants.EMOTIONS as EMOTS
-from audio_datasets.aessd_dataset import AESDD_Greek
-import constants.PATHS as PATHS
+from train_utils.loaders import get_data_loaders
+from train_utils.trainer import train_setup, train
 
 def get_wavenet2_config(HUGGING_FACE_MODEL_PATH):
     emotions = EMOTS.AESDD_EMOTIONS
@@ -26,21 +24,17 @@ def main():
     feature_extractor = \
         Wav2Vec2FeatureExtractor.from_pretrained(model_name_or_path,)
 
-    data_loader = DataLoader(
-        dataset=AESDD_Greek(
-            BASE_DIR=PATHS.AESDD_DIR,
-            ANNOTATIONS_PATH=os.path.join(PATHS.ROOT_DIR, 'annotations/annotations_aesdd.csv'),
-            target_sampling_rate=feature_extractor.sampling_rate
-        ),
-        batch_size=2,
-        shuffle=True,
-        collate_fn=AESDD_Greek.collate_fn
+    train_loader, val_loader = get_data_loaders(
+        train_annotations_path='annotations/annotations_aesdd.csv',
+        val_annotations_path='annotations/annotations_aesdd.csv',
+        feature_extractor=feature_extractor
     )
+    model, criterion, optimizer, scaler = train_setup(model_name_or_path, config)
+    train(train_loader, val_loader, model, criterion, optimizer, scaler)
 
-    (x, lx, y) = next(iter(data_loader))
-    result = feature_extractor(x, sampling_rate=feature_extractor.sampling_rate)
-    print(f"Batch of x: {x}, \n Lengths of x: {lx}")
-    print(f"Batch of y: {y}")
+    # (x, y) = next(iter(train_loader))
+    # print(f"Batch of x: {x}")
+    # print(f"Batch of y: {y}")
 
 if __name__ == '__main__':
     main()
