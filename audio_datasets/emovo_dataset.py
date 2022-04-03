@@ -37,17 +37,10 @@ class EMOVO_Italian(Dataset):
         return audio, label
     
     def collate_fn(batch):
-        # Uncomment this if you feel like this is required in your pipeline
-        # batch_x = [x.numpy() for (x, _) in batch]
-        # batch_y = [y for (_, y) in batch]
-        # return batch_x, batch_y
-
         batch_x = [x.squeeze() for (x, _) in batch]
         batch_x_pad = pad_sequence(batch_x, batch_first=True)
         lengths_x = [len(x) for x in batch_x]
-
         batch_y = [y for (_, y) in batch]
-
         return batch_x_pad, torch.tensor(lengths_x), batch_y
 
 # def test():
