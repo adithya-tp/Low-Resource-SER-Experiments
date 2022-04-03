@@ -1,0 +1,3 @@
+EPOCHS = 1
+BATCH_SIZE = 4
+LR = 1e-4
