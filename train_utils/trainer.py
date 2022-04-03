@@ -1,4 +1,3 @@
-from tkinter import N
 from tqdm import tqdm
 import torch
 import torch.nn as nn
@@ -32,6 +31,7 @@ def train(train_loader, val_loader, model, criterion, optimizer, scaler):
         total_loss = 0
         for i, (x, y) in enumerate(train_loader):
             x = x.cuda()
+            y = y.cuda()
             optimizer.zero_grad()
 
             with torch.cuda.amp.autocast():
@@ -57,15 +57,24 @@ def train(train_loader, val_loader, model, criterion, optimizer, scaler):
 
         train_acc = 100 * num_correct / len(train_loader.dataset)
         train_loss = float(total_loss / len(train_loader))
-        val_acc, val_loss = get_validation_acc(model, val_loader)
+        # val_acc, val_loss = get_validation_acc(model, val_loader, criterion)
 
-        print("Epoch {}/{}: Train Acc {:.04f}%, Train Loss {:.04f}, Validation Acc {:.04f}, Validation Loss {:.04f}, Learning Rate {:.04f}".format(
+        # print("Epoch {}/{}: Train Acc {:.04f}%, Train Loss {:.04f}, Validation Acc {:.04f}, Validation Loss {:.04f}, Learning Rate {:.04f}".format(
+        #     epoch + 1,
+        #     HP.EPOCHS,
+        #     train_acc,
+        #     train_loss,
+        #     val_acc,
+        #     val_loss,
+        #     float(optimizer.param_groups[0]['lr'])
+        #     )
+        # )
+
+        print("Epoch {}/{}: Train Acc {:.04f}%, Train Loss {:.04f}, Learning Rate {:.04f}".format(
             epoch + 1,
             HP.EPOCHS,
             train_acc,
             train_loss,
-            val_acc,
-            val_loss,
             float(optimizer.param_groups[0]['lr'])
             )
         )

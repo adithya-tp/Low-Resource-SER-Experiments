@@ -10,6 +10,7 @@ def get_validation_acc(model, val_loader, criterion):
     total_val_loss = 0
     for i, (x, y) in enumerate(val_loader):
         x = x.cuda()
+        y = y.cuda()
 
         with torch.no_grad():
             outputs = model(x)
@@ -23,5 +24,4 @@ def get_validation_acc(model, val_loader, criterion):
         batch_bar.update()
 
     batch_bar.close()
-    print("Validation: {:.04f}%".format(100 * num_correct / val_loader_length))
     return ( 100 * num_correct / val_loader_length, float(total_val_loss / len(val_loader)) )

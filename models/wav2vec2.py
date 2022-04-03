@@ -20,6 +20,5 @@ class Wav2vec2SER(Wav2Vec2PreTrainedModel):
 
     def forward(self, x):
         backbone_out = self.feat_extractor(x)
-        out = self.cls_layer(torch.mean(backbone_out[0], dim=1))
-        logits = self.cls_layer(out)
+        logits = self.cls_layer(torch.mean(backbone_out[0], dim=1))
         return logits
