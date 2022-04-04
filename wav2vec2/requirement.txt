@@ -1,0 +1,6 @@
+datasets
+transformers
+jiwer
+torchaudio
+librosa
+wandb
