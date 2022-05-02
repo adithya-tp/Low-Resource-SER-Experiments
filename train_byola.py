@@ -203,10 +203,12 @@ def main(model_name, lang, config_path='models/byol_a/config.yml', d=None, epoch
     lang = getattr(LANG, lang)
     CURR_DIR = os.getcwd()
     if lang == LANG.ENGLISH:
-        emotion_dict = {'sad': "Sadness", 'hap': "Happiness", 'fru': "Frustration", 
-                'exc': "Excitement", 'ang': "Anger", 'xxx': "Unknown", 
-                'neu': "Neutral", 'sur': "Surprise", 'oth': "Other",  
-                'fea': "Fear", 'dis': "Disgust"}
+        emotion_dict = {
+            'sad': "Sadness", 'hap': "Happiness", 'fru': "Frustration", 
+            'exc': "Excitement", 'ang': "Anger", 'xxx': "Unknown", 
+            'neu': "Neutral", 'sur': "Surprise", 'oth': "Other",  
+            'fea': "Fear", 'dis': "Disgust"
+        }
         df = pd.read_csv(os.path.join(CURR_DIR, 'annotations/english_annotations.csv'))
         df["label"] = df["emotion"].map(emotion_dict)
         df.rename(columns = {'wav_file':'file'}, inplace = True)
