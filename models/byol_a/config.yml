@@ -23,11 +23,11 @@ ema_decay: 0.99
 seed: 42
 bs: 32
 lr: 0.0003
-epochs: 20
+epochs: 50
 gpus: 1
 
 # Weight pathname for resuming training.
-resume: '/home/ubuntu/Low-Resource-SER-Experiments/checkpoints/default1024_BYOLAs64x96-2205011819-e20-bs32-lr0003-rs42.pth'
+resume: '/home/ubuntu/Low-Resource-SER-Experiments/checkpoints/default1024_BYOLAs64x96-2205020103-e50-bs32-lr0003-rs42.pth'
 # Shape of log-mel spectrogram [F, T].
 shape: [64, 96] # [64, 144]
 # Folder to store trained weight files.

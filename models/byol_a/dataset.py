@@ -75,6 +75,11 @@ class WaveInLMSOutDataset(Dataset):
         # print(self.files[idx])
         try:
             wav, sr = torchaudio.load(self.files[idx])
+            if sr != self.cfg.sample_rate:
+                resampler = torchaudio.transforms.Resample(sr, self.cfg.sample_rate)
+                wav = resampler(wav)
+                wav = torch.mean(wav, dim=0, keepdim=True) # convert to mono-channel
+                sr = self.cfg.sample_rate
         except RuntimeError:
             print(self.files[idx])
             raise FileNotFoundError(self.files[idx])
