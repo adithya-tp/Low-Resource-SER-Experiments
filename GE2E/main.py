@@ -7,7 +7,6 @@ from train import train, evaluate
 from model import Wav2Vec2ClassificationHead
 import torch
 import wandb
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from speechbrain.pretrained.interfaces import foreign_class
