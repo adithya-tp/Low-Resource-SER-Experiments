@@ -2,7 +2,9 @@
 .DS_Store
 # data folder
 data/
-
-
 # pycache
 __pycache__/
+# checkpoints
+checkpoints/
+# pytorch lightning logs
+lightning_logs/
