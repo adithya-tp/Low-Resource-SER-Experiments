@@ -177,6 +177,8 @@ class LANG(Enum):
     ENGLISH = 0
     FRENCH = 1
     GERMAN = 2
+    GREEK = 3
+    ITALIAN = 4
 
 def get_english_path(base_name, LANG_DATA_DIR):
     base_split = base_name.split('_')
@@ -186,7 +188,27 @@ def get_english_path(base_name, LANG_DATA_DIR):
     path = os.path.join(LANG_DATA_DIR, f'{session}/sentences/wav/{sub_folder}/{base_name}.wav')
     return path
 
-def main(model_name, lang, config_path='models/byol_a/config.yml', d=None, epochs=None, resume=None):
+def get_modified_greek_df(df, LANG_DATA_DIR):
+    file_paths = []
+    for idx, row in df.iterrows():
+        path_name, label = row
+        file_paths.append(os.path.join(LANG_DATA_DIR, f'{label}/{path_name}'))
+    
+    d = {'file': file_paths, 'label': df['folder_or_label'].tolist()}
+    df = pd.DataFrame(d)
+    return df
+
+def get_modified_italian_df(df, LANG_DATA_DIR):
+    file_paths = []
+    for idx, row in df.iterrows():
+        path_name, folder, label = row
+        file_paths.append(os.path.join(LANG_DATA_DIR, folder, path_name))
+    
+    d = {'file': file_paths, 'label': df['emotion'].tolist()}
+    df = pd.DataFrame(d)
+    return df
+
+def main(model_name, config_path='models/byol_a/config.yml', d=None, epochs=None, resume=None):
     warnings.filterwarnings("ignore", category=LightningDeprecationWarning)
     cfg = load_yaml_config(config_path)
     # Override configs
@@ -200,7 +222,9 @@ def main(model_name, lang, config_path='models/byol_a/config.yml', d=None, epoch
     # Data preparation
 
     # Run train_utils script from main directory
-    lang = getattr(LANG, lang)
+    # lang = getattr(LANG, lang)
+    lang = LANG.ITALIAN
+
     CURR_DIR = os.getcwd()
     if lang == LANG.ENGLISH:
         emotion_dict = {
@@ -235,6 +259,19 @@ def main(model_name, lang, config_path='models/byol_a/config.yml', d=None, epoch
         LANG_DATA_DIR = os.path.join(os.getcwd(), 'data/french')
         df['file'] = df['file'].map(lambda x: os.path.join(LANG_DATA_DIR, x))
 
+    elif lang == LANG.GREEK:
+        df = pd.read_csv(os.path.join(CURR_DIR, 'annotations/annotations_aesdd.csv'))
+        df.rename(columns = {'file_path':'file'}, inplace = True)
+        LANG_DATA_DIR = os.path.join(os.getcwd(), 'data/greek')
+        df = get_modified_greek_df(df, LANG_DATA_DIR)
+    
+    elif lang == LANG.ITALIAN:
+        df = pd.read_csv(os.path.join(CURR_DIR, 'annotations/annotations_emovo.csv'))
+        df.rename(columns = {'file_path':'file'}, inplace = True)
+        LANG_DATA_DIR = os.path.join(os.getcwd(), 'data/italian')
+        df = get_modified_italian_df(df, LANG_DATA_DIR)
+
+
     else:
         raise ValueError('Please pass in a valid language (ENGLISH, GERMAN or FRENCH)')
 
@@ -249,7 +286,7 @@ def main(model_name, lang, config_path='models/byol_a/config.yml', d=None, epoch
         ds,
         batch_size=cfg.bs,
         num_workers=multiprocessing.cpu_count(),
-        pin_memory=True,
+        pin_memory=False,
         shuffle=True,
     )
     logger.info(f'Dataset: {len(files)} .wav files from {LANG_DATA_DIR}')

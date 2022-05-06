@@ -49,6 +49,7 @@ class WaveInLMSOutDataset(Dataset):
         self.labels = labels
         self.transform = transform
         self.unit_length = int(cfg.unit_sec * cfg.sample_rate)
+        # self.wav_data = []
         self.to_melspecgram = MelSpectrogramLibrosa(
             fs=cfg.sample_rate,
             n_fft=cfg.n_fft,
@@ -67,6 +68,15 @@ class WaveInLMSOutDataset(Dataset):
             power=2,
         )
 
+        # for file in self.files:
+        #     wav, sr = torchaudio.load(file)
+        #     if sr != self.cfg.sample_rate:
+        #         resampler = torchaudio.transforms.Resample(sr, self.cfg.sample_rate)
+        #         wav = resampler(wav)
+        #         if wav.shape[0] > 1:
+        #             wav = wav[0, :].unsqueeze(0)
+        #         self.wav_data.append(wav)
+
     def __len__(self):
         return len(self.files)
 
@@ -80,10 +90,11 @@ class WaveInLMSOutDataset(Dataset):
                 wav = resampler(wav)
                 wav = torch.mean(wav, dim=0, keepdim=True) # convert to mono-channel
                 sr = self.cfg.sample_rate
+            # wav = self.wav_data[idx]
         except RuntimeError:
             print(self.files[idx])
             raise FileNotFoundError(self.files[idx])
-        assert sr == self.cfg.sample_rate, f'Convert .wav files to {self.cfg.sample_rate} Hz. {self.files[idx]} has {sr} Hz.'
+        # assert sr == self.cfg.sample_rate, f'Convert .wav files to {self.cfg.sample_rate} Hz. {self.files[idx]} has {sr} Hz.'
         assert wav.shape[0] == 1, f'Convert .wav files to single channel audio, {self.files[idx]} has {wav.shape[0]} channels.'
         wav = wav[0]  # (1, length) -> (length,)
 
